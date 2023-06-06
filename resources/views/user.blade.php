@@ -48,7 +48,7 @@
                                             <td>{{ $pengguna->roles_id }}</td>
 
                                             <td>
-                                                @if ($pengguna->phote !== null)
+                                                @if ($pengguna->photo !== null)
                                                     <img src="{{ asset('storage/photo_user/' . $pengguna->photo) }}"
                                                         width="100px" />
                                                 @else
@@ -57,14 +57,10 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                    <button type="button" id="btn-edit-pengguna" class="btn"
+                                                <button type="button" id="btn-edit-pengguna" class="btn btn-success"
                                                         data-toggle="modal" data-target="#editUserModal"
-                                                        data-id="{{ $pengguna->id }}"><i class="fa fa-edit"></i></button>
-                                                    <button type="button" id="btn-delete-pengguna" class="btn"
-                                                        data-toggle="modal" data-target="#deleteUserModal"
-                                                        data-id="{{ $pengguna->id }}"
-                                                        data-cover="{{ $pengguna->photo }}"><i
-                                                            class="fa fa-trash"></i></button>
+                                                        data-id="{{ $pengguna->id }}">Edit</button>
+                                                        <a class="btn btn-danger" href="user/delete/{{ $pengguna->id}}" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">Hapus</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -170,7 +166,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="edit-tanggal">Tanggal</label>
-                                        <input type="text" id="date" class="date form-control" name="tanggal"
+                                        <input type="date" id="edit-tanggal" class="date form-control" name="tanggal"
                                             id="edit-tanggal" required />
                                     </div>
                                     <div class="form-group">
@@ -217,7 +213,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="hidden" name="id" id="edit-id" />
-                        <input type="hidden" name="old_photo" id="edit-old-photo" />
+                        <input type="hidden" name="old_photo" id="edit-old_photo" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-success">Update</button>
                         </form>
@@ -225,40 +221,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Hapus Data Obat</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Apakah anda yakin akan menghapus data tersebut?
-                        <form method="post" action="{{ route('admin.pengguna.delete') }}"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('DELETE')
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" name="id" id="delete-id" value="" />
-                        <input type="hidden" name="old_photo" id="delete-old-photo" />
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger">Hapus</button>
-                    </div>
-                    {{-- <div class="card-body">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#tambahDrugModal"><i class="fa fa-plus"></i>Tambah Data</button>
-            <a href="{{ route('admin.print.drugs') }}" target="_blank" class="btn btn-danger"></i> Cetak PDF</a>
-            <hr/> --}}
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br />
-    <br />
+       
 @stop
 
 @section('footer')
@@ -308,7 +271,7 @@
 
                 $.ajax({
                     type: "get",
-                    url: baseurl + '/admin/ajaxadmin/dataUser/' + id,
+                    url: "{{ url('/admin/ajaxadmin/dataUser') }}/" + id,
                     dataType: 'json',
                     success: function(res) {
                         $('#edit-name').val(res.name);
@@ -320,7 +283,7 @@
                         $('#edit-roles_id').val(res.roles_id);
 
                         $('#edit-id').val(res.id);
-                        $('#edit-old-photo').val(res.photo);
+                        $('#edit-old_photo').val(res.photo);
 
                         if (res.photo !== null) {
                             $('#image-area').append(
@@ -336,13 +299,6 @@
 
         });
 
-        $(document).on('click', '#btn-delete-pengguna', function() {
-            let id = $(this).data('id');
-            let photo = $(this).data('photo');
-            $('#delete-id').val(id);
-            $('#delete-old-photo').val(photo);
-            console.log("hallo");
-        });
     </script>
 @stop
 @section('js')

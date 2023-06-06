@@ -14,8 +14,9 @@ class AgendaController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $agendas = Agenda::with('users')->get();
-        return view('agenda', compact('user', 'agendas'));
+        $pengguna =  User::all();
+        $agendas = Agenda::with('pengguna')->get();
+        return view('agenda', compact('user', 'agendas','pengguna'));
     }
 
     public function tambah_agenda(Request $req)
@@ -34,7 +35,7 @@ class AgendaController extends Controller
         );
 
 
-        return redirect()->route('admin.agenda.submit')->with($notification);
+        return redirect()->route('admin.agenda')->with($notification);
     }
     //Ajax Processes
     public function getDataAgenda($id)
@@ -46,7 +47,6 @@ class AgendaController extends Controller
 
     public function update_agenda(Request $req)
     {
-        $pengguna = User::all();
         $agenda = Agenda::find($req->get('id'));
         // $agenda = Agenda::find($req->get('id'));
 
@@ -62,18 +62,13 @@ class AgendaController extends Controller
         );
 
 
-        return redirect()->route('admin.agenda.update', compact('agenda', 'pengguna'))->with($notification);
+        return redirect()->route('admin.agenda')->with($notification);
     }
-    public function delete_agenda(Request $req)
+    public function delete_agenda(Request $req,$id)
     {
-        $agenda = Agenda::find($req->get('id'));
-
+        $agenda = Agenda::where('id',$id);
         $agenda->delete();
-        $notification = array(
-            'message' => 'Data Brand Berhasil di Hapus',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('admin.agenda.delete')->with($notification);
+        Session::flash('status', 'Hapus data Agenda berhasil!!!');
+        return redirect()->back();
     }
 }

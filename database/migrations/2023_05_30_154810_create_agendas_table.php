@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('agendas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('users');
+            $table->foreignId('users')->contrained();
             $table->date('tanggal');
             $table->string('isi_agenda');
             $table->timestamps();

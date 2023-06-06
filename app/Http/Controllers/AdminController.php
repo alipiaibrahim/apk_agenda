@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Agenda;
+use Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -26,5 +29,5 @@ class AdminController extends Controller
     //     $gurus = Guru::all();
     //     return view('guru', compact('user', 'gurus'));
     // }
-
+   
 }

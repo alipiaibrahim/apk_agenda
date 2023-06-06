@@ -10,7 +10,7 @@
                 <div class="card">
                     <div class="card-header">{{ __('Pengelolaan Data Agenda') }}</div>
                     <div class="card-body">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#tambahModal"><i
                                 class="fa fa-plus"></i> Tambah Data</button>
                         <hr />
                     </div>
@@ -29,17 +29,15 @@
                             @foreach ($agendas as $agenda)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $agenda->name }}</td>
+                                    <td>{{ $agenda->pengguna->name }}</td>
                                     <td>{{ $agenda->tanggal }}</td>
                                     <td>{{ $agenda->isi_agenda }}</td>
                                     <td>
                                         <div class="btn-group" roles="group" aria-label="Basic Example">
-                                            <button type="button" id="btn-edit-guru" class="btn" data-toggle="modal"
-                                                data-target="#modalUpdate" data-id="{{ $agenda->id }}""><i
-                                                    class="fa fa-edit"></i></button>
-                                            <button type="button" id="btn-delete-guru" class="btn" data-toggle="modal"
-                                                data-target="#modalDelete" data-id="{{ $agenda->id }}"
-                                                data-nama="{{ $agenda->users }}"><i class="fa fa-trash"></i></button>
+                                        <button type="button" id="btn-edit-agenda" class="btn btn-success"
+                                                        data-toggle="modal" data-target="#ubahModal"
+                                                        data-id="{{ $agenda->id }}">Edit</button>
+                                                        <a class="btn btn-danger" href="agenda/delete/{{ $agenda->id}}" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">Hapus</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -51,12 +49,12 @@
         </div>
     </div>
 
-    <!-- Modal Tambah Data -->
-    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambah Agenda</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Data Mapel</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -65,92 +63,76 @@
                     <form method="post" action="{{ route('admin.agenda.submit') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
-                            <label for="users">Nama Guru</label>
-                            <div class="input-group">
-                                <select name="users" id="users" placeholder="Input Users"
-                                    aria-label="Example select with button addon" class="form-control" required />
-                                <option selected>Pilih....</option>
-                                @php
-                                    $data = App\Models\User::get();
-                                @endphp
-                                @foreach ($data as $key)
-                                    <option value="{{ $key->id }}">{{ $key->name }}</option>
-                                @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="tanggal">Tanggal</label>
-                                <input type="text" id="date" class="date form-control" name="tanggal" id="tanggal"
-                                    required />
-                            </div>
-                            <div class="form-group">
-                                <label for="isi_agenda">Isi Agenda</label>
-                                <input type="text" class="form-control" placeholder="Masukan isi agenda"
-                                    name="isi_agenda" id="isi_agenda" required />
-                            </div>
+                        <label for="users">Pilih Guru</label>
+                            <select name="users" id="users" class="form-control">
+                                <option value="">Pilih Guru</option>
+                                @foreach($pengguna as $key)
+                            <option value="{{$key->id}}">{{$key->name}}</option>
+                            @endforeach
+                            </select>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Tambah</button>
+                        <div class="form-group">
+                            <label for="tanggal">Tanggal</label>
+                            <input type="date" class="form-control" name="tanggal" id="tanggal" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="isi_agenda">Isi Agenda</label>
+                            <input type="text" class="form-control" name="isi_agenda" id="isi_agenda" required />
+                        </div>
+                        </div>
+                        
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Kirim</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Tambah Data -->
 
-
-    <!-- Modal Edit Data -->
-    <div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog>
+     <!-- Ubah Tingkatan -->
+     <div class="modal fade" id="ubahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Data Guru</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Ubah Data Agenda</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form method="post" action="{{ route('admin.agenda.update') }}" enctype="multipart/form-data">
-                        @csrf
+                    @csrf
                         @method('PATCH')
-                                <div class="form-group">
-                                    <label for="edit-users">Nama Guru</label>
-                                    <div class="input-group">
-                                        <select name="edit-users" id="edit-users" placeholder="Input Users"
-                                            aria-label="Example select with button addon" class="form-control" required />
-                                        <option selected>Pilih....</option>
-                                        @php
-                                            $data = App\Models\User::get();
-                                        @endphp
-                                        @foreach ($data as $key)
-                                            <option value="{{ $key->id }}">{{ $key->name }}</option>
-                                        @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="edit-tanggal">Tanggal</label>
-                                        <input type="text" class="date form-control" name="tanggal" id="edit-tanggal"
-                                            required />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="edit-isi_agenda">Isi Agenda</label>
-                                        <input type="text" class="form-control" name="isi_agenda"
-                                            id="edit-isi_agenda" required />
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <input type="hidden" name="id" id="edit-id" />
+                        <div class="form-group">
+                        <label for="users">Pilih Guru</label>
+                            <select name="users" id="edit-users" class="form-control">
+                                <option value="">Pilih Guru</option>
+                                @foreach($pengguna as $key)
+                            <option value="{{$key->id}}">{{$key->name}}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-tanggal">Tanggal</label>
+                            <input type="date" class="form-control" name="tanggal" id="edit-tanggal" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-isi_agenda">Isi Agenda</label>
+                            <input type="text" class="form-control" name="isi_agenda" id="edit-isi_agenda" required />
+                        </div>
+                        </div>
+                        
 
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-success">Update</button>
+                <div class="modal-footer">
+                <input type="hidden" name="id" id="edit-id" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Ubah</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-
     <!-- Modal Edit Data -->
 
 
@@ -169,34 +151,28 @@
 
 @section('js')
     <script>
-        $(function() {
-            $("#date").datepicker({
-                format: "yyyy-mm-dd", // Notice the Extra space at the beginning
-                autoclose: true,
-                todayHighlight: true,
-            });
-            $(document).on('click', '#btn-delete-guru', function() {
+      $(function() {
+
+
+            $(document).on('click', '#btn-edit-agenda', function() {
                 let id = $(this).data('id');
-                let users = $(this).data('users');
-                $('#delete-id').val(id);
-                $('#delete-users').text(users);
-                console.log("hallo");
-            });
-            $(document).on('click', '#btn-edit-guru', function() {
-                let id = $(this).data('id');
+
+                $('#image-area').empty();
+
                 $.ajax({
                     type: "get",
-                    url: baseurl + '/admin/ajaxadmin/dataAgenda/' + id,
+                    url: "{{ url('/admin/ajaxadmin/dataAgenda') }}/" + id,
                     dataType: 'json',
                     success: function(res) {
-                        console.log(res);
                         $('#edit-users').val(res.users);
                         $('#edit-tanggal').val(res.tanggal);
                         $('#edit-isi_agenda').val(res.isi_agenda);
                         $('#edit-id').val(res.id);
+
                     },
                 });
             });
+
         });
     </script>
 @stop

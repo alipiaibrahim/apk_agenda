@@ -93,19 +93,13 @@ class UserController extends Controller
         return response()->json($pengguna);
     }
 
-    public function delete_user(Request $req)
+    public function delete_user(Request $req,$id)
     {
-        $pengguna = User::find($req->get('id'));
-
+        $pengguna = User::find($id);
         storage::delete('public/photo_user/' . $req->get('old_photo'));
-
         $pengguna->delete();
 
-        $notification = array(
-            'message' => 'Data User Berhasil Dihapus',
-            'alert-type' => 'succes'
-        );
-
-        return redirect()->route('admin.pengguna.delete')->with($notification);
+        Session::flash('status', 'Hapus data User berhasil!!!');
+        return redirect()->back();
     }
 }
