@@ -13,12 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('temas', function (Blueprint $table) {
+        Schema::create('topiks', function (Blueprint $table) {
             $table->id();
-            $table->string('topiks')->contrained();
-            $table->date('tanggal');
-            $table->string('tema');
-            $table->string('agendas')->contrained();
+            $table->string('nama')->unique();
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('temas');
+        Schema::dropIfExists('topiks');
     }
 };

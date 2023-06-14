@@ -2,43 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
+use App\Models\Tema;
+use App\Models\Topik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Tema;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
+use Session;
 
 class TemaController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $temas = Tema::all();
-        return view('tema', compact('user', 'temas'));
+        $agenda =  Agenda::all();
+        $topik =  Topik::all();
+        $temas = Tema::with('agenda', 'topik')->get();
+        return view('tema', compact('user', 'temas', 'agenda', 'topik'));
     }
 
     public function tambah_tema(Request $req)
     {
         $tema = new Tema;
 
-        $tema->topik = $req->get('topik');
+        $tema->topiks = $req->get('topiks');
         $tema->tanggal = $req->get('tanggal');
         $tema->tema = $req->get('tema');
-        $tema->isi_kegiatan = $req->get('isi_kegiatan');
+        $tema->agendas = $req->get('agendas');
 
         $tema->save();
 
         $notification = array(
-            'message' => 'Data tema berhasil ditambahkan',
+            'message' => 'Data Tema berhasil ditambahkan',
             'alert-type' => 'success'
         );
 
 
-        return redirect()->route('admin.tema.submit')->with($notification);
+        return redirect()->route('admin.tema')->with($notification);
     }
     //Ajax Processes
     public function getDataTema($id)
     {
-        $tema = tema::find($id);
+        $tema = Tema::find($id);
 
         return response()->json($tema);
     }
@@ -46,11 +52,12 @@ class TemaController extends Controller
     public function update_tema(Request $req)
     {
         $tema = Tema::find($req->get('id'));
+        // $tema = tema::find($req->get('id'));
 
-        $tema->topik = $req->get('topik');
+        $tema->topiks = $req->get('topiks');
         $tema->tanggal = $req->get('tanggal');
         $tema->tema = $req->get('tema');
-        $tema->isi_kegiatan = $req->get('isi_kegiatan');
+        $tema->agendas = $req->get('agendas');
 
         $tema->save();
 
@@ -60,18 +67,13 @@ class TemaController extends Controller
         );
 
 
-        return redirect()->route('admin.tema.update')->with($notification);
+        return redirect()->route('admin.tema')->with($notification);
     }
-    public function delete_tema(Request $req)
+    public function delete_tema(Request $req, $id)
     {
-        $tema = Tema::find($req->get('id'));
-
+        $tema = Tema::where('id', $id);
         $tema->delete();
-        $notification = array(
-            'message' => 'Data Brand Berhasil di Hapus',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('admin.tema.delete')->with($notification);
+        Session::flash('status', 'Hapus data tema berhasil!!!');
+        return redirect()->back();
     }
 }

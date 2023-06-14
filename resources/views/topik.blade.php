@@ -1,45 +1,39 @@
 @extends('adminlte::page')
-@section('title', 'Pengelolaan Data Agenda')
+@section('title', 'Pengelolaan Data Topik')
 @section('content_header')
-    <h1 class="text-center text-bold" style="font-family:Arial, Helvetica, sans-serif">PENGELOLAAN DATA AGENDA</h1>
+    <h1 class="text-center text-bold" style="font-family:Arial, Helvetica, sans-serif">PENGELOLAAN DATA TOPIK</h1>
 @stop
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">{{ __('Pengelolaan Data Agenda') }}</div>
+                    <div class="card-header">{{ __('Pengelolaan Data Topik') }}</div>
                     <div class="card-body">
                         <button class="btn btn-primary" data-toggle="modal" data-target="#tambahModal"><i
                                 class="fa fa-plus"></i> Tambah Data</button>
-                        <a href="{{ route('admin.print.agenda') }}" target="_blank" class="btn btn-secondary"><i
-                                class="fa fa-print"></i> Cetak PDF</a>
                         <hr />
                     </div>
                     <table id="table-data" class="table table-borderer display nowrap" style="width:100%">
                         <thead>
                             <tr class="text-center">
                                 <th>NO</th>
-                                <th>NAMA</th>
-                                <th>TANGGAL</th>
-                                <th>ISI AGENDA</th>
+                                <th>TOPIK</th>
                                 <th>AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php $no=1; @endphp
-                            @foreach ($agendas as $agenda)
+                            @foreach ($topiks as $topik)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $agenda->pengguna->name }}</td>
-                                    <td>{{ $agenda->tanggal }}</td>
-                                    <td>{{ $agenda->isi_agenda }}</td>
+                                    <td>{{ $topik->nama }}</td>
                                     <td>
                                         <div class="btn-group" roles="group" aria-label="Basic Example">
-                                            <button type="button" id="btn-edit-agenda" class="btn btn-success"
+                                            <button type="button" id="btn-edit-topik" class="btn btn-success"
                                                 data-toggle="modal" data-target="#ubahModal"
-                                                data-id="{{ $agenda->id }}">Edit</button>
-                                            <a class="btn btn-danger" href="agenda/delete/{{ $agenda->id }}"
+                                                data-id="{{ $topik->id }}">Edit</button>
+                                            <a class="btn btn-danger" href="topik/delete/{{ $topik->id }}"
                                                 onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">Hapus</a>
                                         </div>
                                     </td>
@@ -63,24 +57,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ route('admin.agenda.submit') }}" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('admin.topik.submit') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
-                            <label for="users">Pilih Guru</label>
-                            <select name="users" id="users" class="form-control">
-                                <option value="">Pilih Guru</option>
-                                @foreach ($pengguna as $key)
-                                    <option value="{{ $key->id }}">{{ $key->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="tanggal">Tanggal</label>
-                            <input type="date" class="form-control" name="tanggal" id="tanggal" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="isi_agenda">Isi Agenda</label>
-                            <input type="text" class="form-control" name="isi_agenda" id="isi_agenda" required />
+                            <label for="nama">Topik</label>
+                            <input type="text" class="form-control" name="nama" id="nama" required />
                         </div>
                 </div>
 
@@ -105,26 +86,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ route('admin.agenda.update') }}" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('admin.topik.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
                         <div class="form-group">
-                            <label for="users">Pilih Guru</label>
-                            <select name="users" id="edit-users" class="form-control">
-                                <option value="">Pilih Guru</option>
-                                @foreach ($pengguna as $key)
-                                    <option value="{{ $key->id }}">{{ $key->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-tanggal">Tanggal</label>
-                            <input type="date" class="form-control" name="tanggal" id="edit-tanggal" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-isi_agenda">Isi Agenda</label>
-                            <input type="text" class="form-control" name="isi_agenda" id="edit-isi_agenda"
-                                required />
+                            <label for="edit-nama">Topik</label>
+                            <input type="text" class="form-control" name="nama" id="edit-nama" required />
                         </div>
                 </div>
 
@@ -143,7 +110,6 @@
     @stop
 
     @section('footer')
-
     @stop
 
     @section('js')
@@ -151,19 +117,17 @@
             $(function() {
 
 
-                $(document).on('click', '#btn-edit-agenda', function() {
+                $(document).on('click', '#btn-edit-topik', function() {
                     let id = $(this).data('id');
 
                     $('#image-area').empty();
 
                     $.ajax({
                         type: "get",
-                        url: "{{ url('/admin/ajaxadmin/dataAgenda') }}/" + id,
+                        url: "{{ url('/admin/ajaxadmin/dataTopik') }}/" + id,
                         dataType: 'json',
                         success: function(res) {
-                            $('#edit-users').val(res.users);
-                            $('#edit-tanggal').val(res.tanggal);
-                            $('#edit-isi_agenda').val(res.isi_agenda);
+                            $('#edit-nama').val(res.nama);
                             $('#edit-id').val(res.id);
 
                         },

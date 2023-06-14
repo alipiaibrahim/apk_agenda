@@ -9,7 +9,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        {{ __('Pengelolaan User') }}
+                        {{ __('Pengelolaan Guru') }}
 
                         {{-- <button class="btn btn-secondary float-right" data-toggle="modal"><a href="{{ route('admin.print.drugs') }}" target="_blank"><i class="fa fa-print"></i> Cetak PDF</a></button> --}}
                     </div>
@@ -57,10 +57,11 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                <button type="button" id="btn-edit-pengguna" class="btn btn-success"
+                                                    <button type="button" id="btn-edit-pengguna" class="btn btn-success"
                                                         data-toggle="modal" data-target="#editUserModal"
                                                         data-id="{{ $pengguna->id }}">Edit</button>
-                                                        <a class="btn btn-danger" href="user/delete/{{ $pengguna->id}}" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">Hapus</a>
+                                                    <a class="btn btn-danger" href="user/delete/{{ $pengguna->id }}"
+                                                        onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">Hapus</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -221,85 +222,77 @@
                 </div>
             </div>
         </div>
-       
-@stop
 
-@section('footer')
-    <div class="footer" style="text-align: center; color: black;">
-        <div class="float-right d-none d-sm-block">
-            <b>Version</b> 3.0.0
-        </div>
-        <strong>&copy;
-            <a href="https://www.instagram.com/ibr.pia/" target="_blank">APOLIA {{ date('Y') }}</a>.</strong> All
-        Right reserved.
-    </div>
-@stop
+    @stop
 
-@section('css')
-    <style>
-        input[type=text],
-        select,
-        textarea {
-            width: 100%;
-            /* Full width */
-            padding: 12px;
-            /* Some padding */
-            border: 1px solid #ccc;
-            /* Gray border */
-            border-radius: 4px;
-            /* Rounded borders */
-            box-sizing: border-box;
-            /* Make sure that padding and width stays in place */
-            margin-top: 6px;
-            /* Add a top margin */
-            margin-bottom: 16px;
-            /* Bottom margin */
-            resize: vertical
-                /* Allow the user to vertically resize the textarea (not horizontally) */
-        }
-    </style>
-@stop
-@section('js')
-    <script>
-        $(function() {
+    @section('footer')
+
+    @stop
+
+    @section('css')
+        <style>
+            input[type=text],
+            select,
+            textarea {
+                width: 100%;
+                /* Full width */
+                padding: 12px;
+                /* Some padding */
+                border: 1px solid #ccc;
+                /* Gray border */
+                border-radius: 4px;
+                /* Rounded borders */
+                box-sizing: border-box;
+                /* Make sure that padding and width stays in place */
+                margin-top: 6px;
+                /* Add a top margin */
+                margin-bottom: 16px;
+                /* Bottom margin */
+                resize: vertical
+                    /* Allow the user to vertically resize the textarea (not horizontally) */
+            }
+        </style>
+    @stop
+    @section('js')
+        <script>
+            $(function() {
 
 
-            $(document).on('click', '#btn-edit-pengguna', function() {
-                let id = $(this).data('id');
+                $(document).on('click', '#btn-edit-pengguna', function() {
+                    let id = $(this).data('id');
 
-                $('#image-area').empty();
+                    $('#image-area').empty();
 
-                $.ajax({
-                    type: "get",
-                    url: "{{ url('/admin/ajaxadmin/dataUser') }}/" + id,
-                    dataType: 'json',
-                    success: function(res) {
-                        $('#edit-name').val(res.name);
-                        $('#edit-tanggal').val(res.tanggal);
-                        $('#edit-no_tlp').val(res.no_tlp);
-                        $('#edit-username').val(res.username);
-                        $('#edit-email').val(res.email);
-                        $('#edit-password').val(res.password);
-                        $('#edit-roles_id').val(res.roles_id);
+                    $.ajax({
+                        type: "get",
+                        url: "{{ url('/admin/ajaxadmin/dataUser') }}/" + id,
+                        dataType: 'json',
+                        success: function(res) {
+                            $('#edit-name').val(res.name);
+                            $('#edit-tanggal').val(res.tanggal);
+                            $('#edit-no_tlp').val(res.no_tlp);
+                            $('#edit-username').val(res.username);
+                            $('#edit-email').val(res.email);
+                            $('#edit-password').val(res.password);
+                            $('#edit-roles_id').val(res.roles_id);
 
-                        $('#edit-id').val(res.id);
-                        $('#edit-old_photo').val(res.photo);
+                            $('#edit-id').val(res.id);
+                            $('#edit-old_photo').val(res.photo);
 
-                        if (res.photo !== null) {
-                            $('#image-area').append(
-                                "<img src='" + baseurl + "/storage/photo_pengguna/" + res
-                                .photo + "' width='200px'/>"
-                            );
-                        } else {
-                            $('#image-area').append('[Gambar tidak tersedia]');
-                        }
-                    },
+                            if (res.photo !== null) {
+                                $('#image-area').append(
+                                    "<img src='" + baseurl + "/storage/photo_pengguna/" + res
+                                    .photo + "' width='200px'/>"
+                                );
+                            } else {
+                                $('#image-area').append('[Gambar tidak tersedia]');
+                            }
+                        },
+                    });
                 });
+
             });
-
-        });
-
-    </script>
-@stop
-@section('js')
-    <script></script>
+        </script>
+    @stop
+    @section('js')
+        <script></script>

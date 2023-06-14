@@ -1,16 +1,16 @@
 @extends('adminlte::page')
-@section('title', 'Pengelolaan Data Guru')
+@section('title', 'Pengelolaan Data Tema')
 @section('content_header')
-    <h1 class="text-center text-bold" style="font-family:Arial, Helvetica, sans-serif">PENGELOLAAN DATA GURU</h1>
+    <h1 class="text-center text-bold" style="font-family:Arial, Helvetica, sans-serif">PENGELOLAAN DATA TEMA</h1>
 @stop
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">{{ __('Pengelolaan Data Guru') }}</div>
+                    <div class="card-header">{{ __('Pengelolaan Data Tema') }}</div>
                     <div class="card-body">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#tambahModal"><i
                                 class="fa fa-plus"></i> Tambah Data</button>
                         <hr />
                     </div>
@@ -21,7 +21,7 @@
                                 <th>TOPIK</th>
                                 <th>TANGGAL</th>
                                 <th>TEMA</th>
-                                <th>DESKRIPSI KEGIATAN</th>
+                                <th>ISI AGENDA</th>
                                 <th>AKSI</th>
                             </tr>
                         </thead>
@@ -30,18 +30,17 @@
                             @foreach ($temas as $tema)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $tema->topik }}</td>
+                                    <td>{{ $tema->topik->nama }}</td>
                                     <td>{{ $tema->tanggal }}</td>
                                     <td>{{ $tema->tema }}</td>
-                                    <td>{{ $tema->isi_kegiatan }}</td>
+                                    <td>{{ $tema->agenda->isi_agenda }}</td>
                                     <td>
                                         <div class="btn-group" roles="group" aria-label="Basic Example">
-                                            <button type="button" id="btn-edit-guru" class="btn" data-toggle="modal"
-                                                data-target="#modalEdit" data-id="{{ $tema->id }}"><i
-                                                    class="fa fa-edit"></i></button>
-                                            <button type="button" id="btn-delete-guru" class="btn" data-toggle="modal"
-                                                data-target="#modalDelete" data-id="{{ $tema->id }}"
-                                                data-nama="{{ $tema->topik }}"><i class="fa fa-trash"></i></button>
+                                            <button type="button" id="btn-edit-agenda" class="btn btn-success"
+                                                data-toggle="modal" data-target="#ubahModal"
+                                                data-id="{{ $tema->id }}">Edit</button>
+                                            <a class="btn btn-danger" href="tema/delete/{{ $tema->id }}"
+                                                onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">Hapus</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -53,12 +52,12 @@
         </div>
     </div>
 
-    <!-- Modal Tambah Data -->
-    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Tambah Data Guru</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Data Mapel</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -67,43 +66,49 @@
                     <form method="post" action="{{ route('admin.tema.submit') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
-                            <label for="topik">Topik</label>
-                            <input type="text" class="form-control" placeholder="Masukan topik guru" name="topik"
-                                id="topik" required />
+                            <label for="topiks">Topik</label>
+                            <select name="topiks" id="topiks" class="form-control">
+                                <option value="">Pilih Isi Topik</option>
+                                @foreach ($topik as $key)
+                                    <option value="{{ $key->id }}">{{ $key->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="tanggal">Tanggal</label>
-                            <input type="text" id="date" class="date form-control" name="tanggal" id="tanggal"
-                                required />
+                            <input type="date" class="form-control" name="tanggal" id="tanggal" required />
                         </div>
                         <div class="form-group">
                             <label for="tema">Tema</label>
-                            <input type="text" class="form-control" placeholder="Masukan tema" name="tema"
-                                id="tema" required />
+                            <input type="text" class="form-control" name="tema" id="tema" required />
                         </div>
                         <div class="form-group">
-                            <label for="isi_kegiatan">Isi Kegiatan</label>
-                            <input type="text" class="form-control" placeholder="Masukan isi_kegiatan"
-                                name="isi_kegiatan" id="isi_kegiatan" required />
+                            <label for="agendas">Pilih Isi Kegiatan</label>
+                            <select name="agendas" id="agendas" class="form-control">
+                                <option value="">Pilih Isi Agenda</option>
+                                @foreach ($agenda as $key)
+                                    <option value="{{ $key->id }}">{{ $key->isi_agenda }}</option>
+                                @endforeach
+                            </select>
                         </div>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Tambah</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Kirim</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Modal Tambah Data -->
 
 
-    <!-- Modal Edit Data -->
-    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+    <!-- Ubah Tingkatan -->
+    <div class="modal fade" id="ubahModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Data Guru</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Ubah Data Agenda</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -112,115 +117,80 @@
                     <form method="post" action="{{ route('admin.tema.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PATCH')
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="edit-topik">Topik</label>
-                                    <input type="text" class="form-control" name="topik" id="edit-topik"
-                                        required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="edit-tanggal">Tanggal</label>
-                                    <input type="text" class="date form-control" name="tanggal" id="edit-tanggal"
-                                        required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="edit-tema">Tema</label>
-                                    <input type="text" class="form-control" name="tema" id="edit-tema" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="edit-isi_kegiatan">Isi Kegiatan</label>
-                                    <input type="text" class="form-control" name="isi_kegiatan"
-                                        id="edit-isi_kegiatan" required />
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="edit-topiks">Topik</label>
+                            <select name="topiks" id="edit-topiks" class="form-control">
+                                <option value="">Pilih Isi Topik</option>
+                                @foreach ($topik as $key)
+                                    <option value="{{ $key->id }}">{{ $key->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-tanggal">Tanggal</label>
+                            <input type="date" class="form-control" name="tanggal" id="edit-tanggal" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-tema">Tema</label>
+                            <input type="text" class="form-control" name="tema" id="edit-tema" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-agendas">Pilih Isi Kegiatan</label>
+                            <select name="agendas" id="edit-agendas" class="form-control">
+                                <option value="">Pilih Isi Agenda</option>
+                                @foreach ($agenda as $key)
+                                    <option value="{{ $key->id }}">{{ $key->isi_agenda }}</option>
+                                @endforeach
+                            </select>
                         </div>
                 </div>
+
+
                 <div class="modal-footer">
                     <input type="hidden" name="id" id="edit-id" />
-
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success">Update</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary">Ubah</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Modal Edit Data -->
+        <!-- Modal Edit Data -->
 
 
-    <!-- Modal Delete Data -->
-    <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Guru</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Apakah anda yakin ingin menghapus Data Guru <strong class="" id="delete-nama"></strong>?
-                    <form method="post" action="{{ route('admin.tema.delete') }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('DELETE')
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" name="id" id="delete-id" value="" />
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-@stop
+    @stop
 
-@section('footer')
-    <div class="footer" style="text-align: center; color: black;">
-        <div class="float-right d-none d-sm-block">
-            <b>Version</b> 3.0.0
-        </div>
-        <strong>&copy;
-            <a href="https://www.instagram.com/ibr.pia/" target="_blank">APOLIA {{ date('Y') }}</a>.</strong> All
-        Right reserved.
-    </div>
-@stop
+    @section('footer')
 
-@section('js')
-    <script>
-        $(function() {
-            $("#date").datepicker({
-                format: "yyyy-mm-dd", // Notice the Extra space at the beginning
-                autoclose: true,
-                todayHighlight: true,
-            });
-            $(document).on('click', '#btn-delete-guru', function() {
-                let id = $(this).data('id');
-                let topik = $(this).data('topik');
-                $('#delete-id').val(id);
-                $('#delete-topik').text(topik);
-                console.log("hallo");
-            });
-            $(document).on('click', '#btn-edit-guru', function() {
-                let id = $(this).data('id');
-                $.ajax({
-                    type: "get",
-                    url: baseurl + '/admin/ajaxadmin/dataTema/' + id,
-                    dataType: 'json',
-                    success: function(res) {
-                        console.log(res);
-                        $('#edit-topik').val(res.topik);
-                        $('#edit-tanggal').val(res.tanggal);
-                        $('#edit-tema').val(res.tema);
-                        $('#edit-isi_kegiatan').val(res.isi_kegiatan);
-                        $('#edit-id').val(res.id);
-                    },
+    @stop
+
+    @section('js')
+        <script>
+            $(function() {
+
+
+                $(document).on('click', '#btn-edit-agenda', function() {
+                    let id = $(this).data('id');
+
+                    $('#image-area').empty();
+
+                    $.ajax({
+                        type: "get",
+                        url: "{{ url('/admin/ajaxadmin/dataTema') }}/" + id,
+                        dataType: 'json',
+                        success: function(res) {
+                            $('#edit-topiks').val(res.topiks);
+                            $('#edit-tanggal').val(res.tanggal);
+                            $('#edit-tema').val(res.tema);
+                            $('#edit-agendas').val(res.agendas);
+                            $('#edit-id').val(res.id);
+
+                        },
+                    });
                 });
+
             });
-        });
-    </script>
-@stop
-@section('js')
-    <script></script>
-@stop
+        </script>
+    @stop
+    @section('js')
+        <script></script>
+    @stop

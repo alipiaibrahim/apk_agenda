@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Calculation\Category;
+use Session;
 
 class UserController extends Controller
 {
@@ -83,7 +84,8 @@ class UserController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('admin.pengguna.update')->with($notification);
+        return redirect()->route('admin.pengguna
+        ')->with($notification);
     }
 
     public function getDataUser($id)
@@ -93,11 +95,11 @@ class UserController extends Controller
         return response()->json($pengguna);
     }
 
-    public function delete_user(Request $req,$id)
+    public function delete_user(Request $req, $id)
     {
         $pengguna = User::find($id);
         storage::delete('public/photo_user/' . $req->get('old_photo'));
-        $pengguna->delete();
+        // $pengguna->delete();
 
         Session::flash('status', 'Hapus data User berhasil!!!');
         return redirect()->back();

@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'APLIKASI AGENDA TK',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>APLIKASI AGENDA TK</b>',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -312,33 +312,33 @@ return [
         [
             'text'      => 'Data Guru',
             'url'       => 'admin/user',
-            'icon'      => 'fas fa-comments',
+            'icon'      => 'fas fa-folder-open',
             'can'       => ['isAdmin']
         ],
         [
             'text'        => 'Agenda',
             'url'         => 'admin/agenda',
             'icon'        => 'far fa-fw fa-file',
-            'can'         => ['isAdmin']
+            'can'         => ['isUser', 'isAdmin']
         ],
         [
             'text'      => 'Topik',
+            'url'       => 'admin/topik',
+            'icon'      => 'fas fa-book',
+            'can'       => ['isAdmin']
+        ],
+        [
+            'text'      => 'Tema',
             'url'       => 'admin/tema',
             'icon'      => 'fas fa-comments',
-            'can'       => ['isUser', 'isAdmin']
+            'can'       => ['isAdmin']
         ],
-        [
-            'text'        => 'Lihat Jadwal',
-            'url'         => '/lihatjadwal',
-            'icon'        => 'far fa-fw fa-file',
-            'can'         => ['isUser']
-        ],
-        [
-            'text'        => 'Agenda',
-            'url'         => '/agenda',
-            'icon'        => 'far fa-fw fa-file',
-            'can'         => ['isUser']
-        ],
+        // [
+        //     'text'        => 'Agenda',
+        //     'url'         => '/agenda',
+        //     'icon'        => 'far fa-fw fa-file',
+        //     'can'         => ['isUser']
+        // ],
         // ['header' => 'account_settings'],
         // [
         //     'text' => 'profile',
@@ -388,22 +388,6 @@ return [
         //         ],
         //     ],
         // ],
-        ['header' => 'labels'],
-        [
-            'text'       => 'important',
-            'icon_color' => 'red',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'warning',
-            'icon_color' => 'yellow',
-            'url'        => '#',
-        ],
-        [
-            'text'       => 'information',
-            'icon_color' => 'cyan',
-            'url'        => '#',
-        ],
     ],
 
     /*

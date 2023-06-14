@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\TemaController;
+use App\Http\Controllers\TopikController;
 use App\Models\Guru;
 use App\Models\User;
 use App\Models\Agenda;
@@ -75,21 +76,33 @@ Route::patch('admin/user', [UserController::class, 'update'])
 Route::get('admin/ajaxadmin/dataUser/{id}', [UserController::class, 'getDataUser']);
 
 //route delete
-Route::delete('/admin/user', [UserController::class, 'delete_user'])
-    ->name('admin.pengguna.delete')->middleware('is_admin');
+Route::get('/admin/user/delete/{id}', [UserController::class, 'delete_user'])->name('admin.user.delete')->middleware('is_admin');
+// Route::delete('/admin/user', [UserController::class, 'delete_user'])
+//     ->name('admin.pengguna.delete');
+// ->middleware('is_admin');
 
 
-Route::get('admin/agenda', [App\Http\Controllers\AgendaController::class, 'index'])->name('admin.agenda') ->middleware('is_admin');
+Route::get('admin/agenda', [App\Http\Controllers\AgendaController::class, 'index'])->name('admin.agenda');
+// ->middleware('is_admin');
 
 //route tambah 
-Route::post('admin/agenda', [AgendaController::class, 'tambah_agenda'])->name('admin.agenda.submit') ->middleware('is_admin');
+Route::post('admin/agenda', [AgendaController::class, 'tambah_agenda'])->name('admin.agenda.submit');
+// ->middleware('is_admin');
 
 //route edit
-Route::patch('admin/agenda', [AgendaController::class, 'update_agenda'])->name('admin.agenda.update')->middleware('is_admin');
+Route::patch('admin/agenda', [AgendaController::class, 'update_agenda'])->name('admin.agenda.update');
+// ->middleware('is_admin');
 Route::get('admin/ajaxadmin/dataAgenda/{id}', [AgendaController::class, 'getDataAgenda']);
 
 //route delete
-Route::get('/admin/agenda/delete/{id}', [AgendaController::class, 'delete_agenda'])->name('admin.agenda.delete')->middleware('is_admin');
+Route::get('/admin/agenda/delete/{id}', [AgendaController::class, 'delete_agenda'])->name('admin.agenda.delete');
+// ->middleware('is_admin');
+Route::get(
+    'admin/print_agenda',
+    [App\Http\Controllers\AgendaController::class, 'print_agenda']
+)
+    ->name('admin.print.agenda');
+// ->middleware('is_admin');
 
 
 Route::get('admin/tema', [App\Http\Controllers\TemaController::class, 'index'])
@@ -108,6 +121,24 @@ Route::patch('admin/tema', [TemaController::class, 'update_tema'])
 Route::get('admin/ajaxadmin/dataTema/{id}', [temaController::class, 'getDataTema']);
 
 //route delete
-Route::delete('/admin/tema', [TemaController::class, 'delete_tema'])
-    ->name('admin.tema.delete');
-    // ->middleware('is_admin');
+
+Route::get('/admin/tema/delete/{id}', [TemaController::class, 'delete_tema'])->name('admin.tema.delete')->middleware('is_admin');
+
+
+Route::get('admin/topik', [App\Http\Controllers\TopikController::class, 'index'])
+    ->name('admin.topik');
+// ->middleware('is_admin');
+
+//route tambah 
+Route::post('admin/topik', [TopikController::class, 'submit_topik'])
+    ->name('admin.topik.submit');
+// ->middleware('is_admin');
+
+//route edit
+Route::patch('admin/topik', [TopikController::class, 'update_topik'])
+    ->name('admin.topik.update');
+// ->middleware('is_admin');
+Route::get('admin/ajaxadmin/dataTopik/{id}', [TopikController::class, 'getDataTopik']);
+
+//route delete
+Route::get('/admin/topik/delete/{id}', [TopikController::class, 'delete_topik'])->name('admin.topik.delete')->middleware('is_admin');

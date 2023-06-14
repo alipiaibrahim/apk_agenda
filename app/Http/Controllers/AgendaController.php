@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Calculation\Category;
+use Session;
+use PDF;
 
 class AgendaController extends Controller
 {
@@ -16,7 +18,7 @@ class AgendaController extends Controller
         $user = Auth::user();
         $pengguna =  User::all();
         $agendas = Agenda::with('pengguna')->get();
-        return view('agenda', compact('user', 'agendas','pengguna'));
+        return view('agenda', compact('user', 'agendas', 'pengguna'));
     }
 
     public function tambah_agenda(Request $req)
@@ -64,11 +66,17 @@ class AgendaController extends Controller
 
         return redirect()->route('admin.agenda')->with($notification);
     }
-    public function delete_agenda(Request $req,$id)
+    public function delete_agenda(Request $req, $id)
     {
-        $agenda = Agenda::where('id',$id);
+        $agenda = Agenda::where('id', $id);
         $agenda->delete();
         Session::flash('status', 'Hapus data Agenda berhasil!!!');
         return redirect()->back();
+    }
+    public function print_agenda()
+    {
+        $agenda = Agenda::all();
+        $pdf = PDF::loadview('print_agenda', ['agenda' => $agenda]);
+        return $pdf->download('data_agenda.pdf');
     }
 }
